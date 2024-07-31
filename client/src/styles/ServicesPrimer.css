@@ -1,0 +1,12 @@
+.services-tab {
+  background: linear-gradient(
+    45deg,
+    /* light coral */ rgba(236, 106, 106, 1) 0%,
+    /* light salmon */ rgba(255, 128, 128, 1) 25%,
+    /* salmon */ rgba(255, 102, 102, 1) 37%,
+    /* coral */ rgba(255, 77, 77, 1) 50%,
+    /* indian red */ rgba(255, 51, 51, 1) 51%,
+    /* red */ rgba(255, 25, 25, 1) 83%,
+    /* darker red */ rgba(243, 0, 0, 1) 100%
+  );
+}

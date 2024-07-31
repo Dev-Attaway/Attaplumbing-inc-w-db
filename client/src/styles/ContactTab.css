@@ -1,0 +1,19 @@
+.contact-link {
+  text-decoration: none;
+  color: var(--attaplumbing-red);
+}
+
+.contact-link-mobile {
+  text-decoration: underline;
+  color: var(--attaplumbing-red);
+}
+
+.contact-link:hover {
+  text-decoration: none;
+  color: var(--attaplumbing-red);
+}
+
+.contact-link-mobile:active {
+  text-decoration: none;
+  color: var(--attaplumbing-red);
+}

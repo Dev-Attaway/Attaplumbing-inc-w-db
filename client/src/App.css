@@ -1,0 +1,45 @@
+/* SCSS RGB */
+:root {
+  --steel-blue: #3f88c5ff;
+  --ivory: rgb(255, 255, 255);
+  --onyx: #393e41ff;
+  --attaplumbing-red: #fe001aff;
+}
+
+/* SCSS Gradient */
+:root {
+  --gradient-right: linear-gradient(90deg, #33658aff, #86bbd8ff);
+  --gradient-top-right: linear-gradient(45deg, #86bbd8ff, #f4e8c1ff);
+  --gradient-top-nav: linear-gradient(45deg, #86bbd8ff, rgb(243, 243, 243));
+  --gradient-footer: linear-gradient(
+    225deg,
+    rgb(255, 255, 255),
+    rgb(190, 190, 190)
+  );
+}
+
+body,
+html {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+main {
+  background: repeating-radial-gradient(
+    circle at 0 0,
+    var(--ivory),
+    rgb(247 247 247 / 100%) 200px
+  );
+}
+.header {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.header.sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+}
