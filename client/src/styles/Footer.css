@@ -1,0 +1,49 @@
+.foot-link {
+  text-decoration: none;
+  color: black;
+}
+
+.foot-link-mobile{
+  text-decoration: none;
+  color: black;
+}
+
+.foot-link:hover {
+  text-decoration: underline;
+  color: crimson;
+}
+
+.foot-link-mobile:active {
+  text-decoration: underline;
+  color: crimson;
+}
+
+.footer {
+  background: linear-gradient(
+    45deg,
+    rgba(242, 245, 246, 1) 0%,
+    rgba(227, 234, 237, 1) 37%,
+    rgba(200, 215, 220, 1) 100%
+  );
+}
+
+.bottom-footer {
+  background: linear-gradient(
+    45deg,
+    /* light coral */ rgba(236, 106, 106, 1) 0%,
+    /* light salmon */ rgba(255, 128, 128, 1) 25%,
+    /* salmon */ rgba(255, 102, 102, 1) 37%,
+    /* coral */ rgba(255, 77, 77, 1) 50%,
+    /* indian red */ rgba(255, 51, 51, 1) 51%,
+    /* red */ rgba(255, 25, 25, 1) 83%,
+    /* darker red */ rgba(243, 0, 0, 1) 100%
+  );
+}
+
+.images {
+  width: 3rem;
+  height: auto;
+  object-fit: cover;
+  /* Align to the right side of the parent container */
+  /* Adjust the top position if needed */
+}

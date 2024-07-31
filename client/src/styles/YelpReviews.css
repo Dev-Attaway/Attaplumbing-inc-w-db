@@ -1,0 +1,19 @@
+.card-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: ease-in-out;
+  transition-duration: 150ms;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+}
+
+.card-shadow:hover {
+  box-shadow: 0em 0 1em var(--onyx);
+}
+
+.yelp-logo-image {
+  transition-property: filter;
+  transition-duration: 150ms;
+}
+
+.yelp-logo-image:hover {
+  filter: drop-shadow(0.25rem 0.25rem 0.25rem crimson);
+}

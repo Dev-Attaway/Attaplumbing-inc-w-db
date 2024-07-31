@@ -1,0 +1,8 @@
+.buildZoom-logo-image {
+  transition-property: filter;
+  transition-duration: 150ms;
+}
+
+.buildZoom-logo-image:hover {
+  filter: drop-shadow(0.25rem 0.25rem 0.25rem var(--steel-blue));
+}

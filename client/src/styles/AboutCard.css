@@ -1,0 +1,9 @@
+.card-img-overlay {
+  padding: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .card-img-overlay {
+    min-width: 250px;
+  }
+}

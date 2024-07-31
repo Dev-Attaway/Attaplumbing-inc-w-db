@@ -1,0 +1,33 @@
+.btn-custom {
+  background-color: var(--ivory);
+  border-color: var(--attaplumbing-red);
+  color: var(--onyx);
+}
+
+.btn-custom:hover {
+  background-color: var(--attaplumbing-red);
+  color: var(--onyx);
+}
+
+.services {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.responsive-image {
+  max-width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media screen and (max-width: 1020px) {
+  .services {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .projects {
+    flex-direction: column;
+  }
+}
