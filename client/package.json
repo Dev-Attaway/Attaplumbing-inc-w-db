@@ -13,6 +13,7 @@
     "format": "pnpm exec prettier . --write"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.2",
     "@emailjs/browser": "^4.3.3",
     "bootstrap": "^5.2.3",
     "cors": "^2.8.5",

@@ -3,7 +3,18 @@ import "../styles/Services.css";
 import { IKImage, IKContext } from "imagekitio-react";
 
 // Define the Project component
-function ServiceOption({ service_primer }) {
+function ServiceOption({
+  title_0,
+  service_primer_0,
+  title_1,
+  service_primer_1,
+  title_2,
+  service_primer_2,
+  title_3,
+  service_primer_3,
+  title_4,
+  service_primer_4,
+}) {
   return (
     <div className="services-child-page">
       <div className="card d-flex flex-row flex-wrap align-items-center">
@@ -18,7 +29,16 @@ function ServiceOption({ service_primer }) {
           </IKContext>
         </div>
         <div className="col-md-8 card-body d-flex flex-column justify-content-center">
-          <p className="card-text">{service_primer}</p>
+          <h5 className="card-title">{title_0}</h5>
+          <p className="card-text">{service_primer_0}</p>
+          <h5 className="card-title">{title_1}</h5>
+          <p className="card-text">{service_primer_1}</p>
+          <h5 className="card-title">{title_2}</h5>
+          <p className="card-text">{service_primer_2}</p>
+          <h5 className="card-title">{title_3}</h5>
+          <p className="card-text">{service_primer_3}</p>
+          <h5 className="card-title">{title_4}</h5>
+          <p className="card-text">{service_primer_4}</p>
           <Link to="/Contact" className="mt-2">
             <button type="button" className="btn btn-custom fw-medium">
               Contact us for a Quote
