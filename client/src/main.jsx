@@ -14,6 +14,7 @@ import Error from "./pages/Error";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import Reviews from "./pages/Reviews";
 
 // Define the accessible routes, and which components respond to which URL
 const router = createBrowserRouter([
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/Contact", // Contact path
         element: <Contact />, // Render the Contact component for the Contact path
+      },
+      {
+        path: "/Reviews", // Contact path
+        element: <Reviews />, // Render the Contact component for the Contact path
       },
     ],
   },

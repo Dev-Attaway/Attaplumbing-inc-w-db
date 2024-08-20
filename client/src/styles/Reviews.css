@@ -1,0 +1,16 @@
+.reviews-container {
+  justify-content: space-between;
+}
+.file-review {
+  width: 50%;
+}
+
+@media screen and (max-width: 1125px) {
+  .reviews-container {
+    flex-direction: column;
+  }
+  .file-review {
+    align-self: center;
+    width: 100%;
+  }
+}

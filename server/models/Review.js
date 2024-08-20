@@ -4,7 +4,6 @@ const reviewSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   location: {
@@ -13,6 +12,10 @@ const reviewSchema = new Schema({
   },
   reviewContent: {
     type: String,
+    required: true,
+  },
+  reviewRating: {
+    type: Number,
     required: true,
   },
 });

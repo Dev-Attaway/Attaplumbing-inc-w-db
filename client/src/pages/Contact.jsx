@@ -21,7 +21,7 @@ export default function Contact() {
   const [checkName, setCheckName] = useState(false);
   const [checkMessage, setCheckMessage] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(null);
-  const [captchaSuccess, setCaptchaSuccess] = useState(false);
+  const [captchaSuccess, setCaptchaSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle input changes in the form fields
@@ -73,7 +73,7 @@ export default function Contact() {
           setCheckEmail(false);
           setCheckName(false);
           setCheckMessage(false);
-          setCaptchaSuccess(false); // Reset CAPTCHA
+          setCaptchaSuccess(null); // Reset CAPTCHA
         })
         .catch((error) => {
           console.log("FAILED...", error);
@@ -86,7 +86,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="container-fuild">
+    <div className="container-fluid">
       <div className="p-2 m-2">
         <form>
           <div className="form-group">

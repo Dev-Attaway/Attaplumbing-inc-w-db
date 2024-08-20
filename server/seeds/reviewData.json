@@ -2,21 +2,25 @@
   {
     "name": "Shimgus Pingeaus",
     "location": "1",
-    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh"
+    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh",
+    "reviewRating": 5
   },
   {
     "name": "Migus dingeaus",
     "location": "2",
-    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh"
+    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh",
+    "reviewRating": 3
   },
   {
     "name": "Gumbo lingeaus",
     "location": "3",
-    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh"
+    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh",
+    "reviewRating": 4
   },
   {
     "name": "Dongus longus",
     "location": "4",
-    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh"
+    "reviewContent": "ahhhhhhhhhhhhhhhhhhhhhhhhh",
+    "reviewRating": 5
   }
 ]

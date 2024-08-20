@@ -3,7 +3,7 @@ import { IKImage, IKContext } from "imagekitio-react";
 import { mobileCheck } from "../MobileCheck";
 
 function Footer() {
-    const isMobile = mobileCheck();
+  const isMobile = mobileCheck();
 
   return (
     <div className="justify-content-bottom">

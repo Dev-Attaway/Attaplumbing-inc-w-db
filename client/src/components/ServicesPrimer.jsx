@@ -5,7 +5,7 @@ import "../styles/ServicesPrimer.css";
 
 function ServicesPrimer() {
   return (
-    <div className="card text-start p-2">
+    <div className="card text-start p-2 m-4">
       <div className="d-flex justify-content-between services-tab p-2 rounded">
         <img
           src={Icon}
@@ -33,10 +33,18 @@ function ServicesPrimer() {
       <div className="card-body">
         <h4 className="card-title">Title</h4>
         <p className="card-text">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
-          laborum ad ratione inventore, doloremque nulla quidem illo earum
-          fugit, incidunt, reiciendis obcaecati. Nihil distinctio molestias
-          dignissimos, velit inventore commodi quos.
+          AttaPlumbing provides full-service plumbing in San Diego, handling
+          anything from water pressure issues to busted pipes and clogged
+          drains. We are experts at new installations as well as repairs,
+          helping you select the best water heater for your residence or place
+          of business. We can expertly install any type of water heater, whether
+          you want a conventional model or a state-of-the-art tankless
+          system.Our professional service team is always available to discuss
+          personalized choices that meet your requirements. Our knowledgeable
+          technicians will carefully install your new equipment and walk you
+          through its capabilities once you've made your selection. As your
+          go-to San Diego plumber, we make sure that before we depart, you can
+          use your new system with complete confidence.
         </p>
       </div>
       <div className="d-flex justify-content-between services-tab p-2 rounded">
