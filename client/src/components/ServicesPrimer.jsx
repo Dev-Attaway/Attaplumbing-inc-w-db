@@ -1,4 +1,3 @@
-import React from "react";
 import Icon from "../assets/pipe.svg"; // Importing the SVG file
 import IconRev from "../assets/pipeRev.svg"; // Importing the reversed SVG file
 import "../styles/ServicesPrimer.css";
@@ -31,7 +30,7 @@ function ServicesPrimer() {
         />
       </div>
       <div className="card-body">
-        <h4 className="card-title">Title</h4>
+        <h4 className="card-title">Why Choose Attaplumbing?</h4>
         <p className="card-text">
           AttaPlumbing provides full-service plumbing in San Diego, handling
           anything from water pressure issues to busted pipes and clogged

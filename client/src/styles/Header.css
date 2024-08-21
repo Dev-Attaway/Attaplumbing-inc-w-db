@@ -1,7 +1,11 @@
 header {
-  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    135deg,
+    rgba(254, 255, 255, 1) 40%,
+    rgb(236, 230, 230) 65%
+  );
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
-
 header h1 {
   font-family: "Courier New", Courier, monospace;
   -webkit-text-fill-color: rgb(15, 15, 15);
