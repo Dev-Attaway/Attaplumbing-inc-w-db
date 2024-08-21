@@ -158,9 +158,11 @@ export default function Services() {
                 {buttonStates["btn-4"].text}
               </button>
               <div className="collapse" id="contentId3">
-                <ServiceOption service_primer="A conventional water heater (tank) is a popular choice due to its cost-effectiveness
+                <ServiceOption
+                  service_primer="A conventional water heater (tank) is a popular choice due to its cost-effectiveness
                  and ease of installation. It can easily be integrated into any property and is generally less expensive to install
-                  compared to other water heating systems." />
+                  compared to other water heating systems."
+                />
               </div>
             </div>
           </div>
@@ -182,10 +184,12 @@ export default function Services() {
                 {buttonStates["btn-5"].text}
               </button>
               <div className="collapse" id="contentId4">
-                <ServiceOption service_primer="The tankless water heater, one of the most innovative and popular options available,
+                <ServiceOption
+                  service_primer="The tankless water heater, one of the most innovative and popular options available,
                  was first introduced in 1929 by Stiebel-Elton, who invented the first electric tankless model, making the system
                  more readily available. Designed to provide hot water on demand, it offers a more efficient alternative to traditional
-                 storage systems, where hot water can be depleted before meeting your family's needs." />
+                 storage systems, where hot water can be depleted before meeting your family's needs."
+                />
               </div>
             </div>
           </div>
@@ -207,17 +211,21 @@ export default function Services() {
                 {buttonStates["btn-6"].text}
               </button>
               <div className="collapse" id="contentId5">
-                <ServiceOption service_primer="Attaplumbing's skilled gas experts ensure that every installation is completed correctly
+                <ServiceOption
+                  service_primer="Attaplumbing's skilled gas experts ensure that every installation is completed correctly
                 and in full compliance with all state and municipal codes. A fireplace insert is a prefabricated unit designed to fit into
                 the firebox of an existing open brick fireplace. No additional construction, demolition, or modifications are needed. Gas
-                inserts vent through their own pipe, extending up the chimney, and can operate on either natural gas or propane." />
+                inserts vent through their own pipe, extending up the chimney, and can operate on either natural gas or propane."
+                />
               </div>
             </div>
           </div>
 
           <div className="card mb-2">
             <div className="card-body bg-light">
-              <h3 className="services-font">Gas line Installations and Retrofits</h3>
+              <h3 className="services-font">
+                Gas line Installations and Retrofits
+              </h3>
               <button
                 onClick={() => handleButtonClick("btn-7")}
                 className={`${isMobile ? "btn-custom-mobile" : "btn-custom"}
@@ -232,15 +240,16 @@ export default function Services() {
                 {buttonStates["btn-7"].text}
               </button>
               <div className="collapse" id="contentId6">
-                <ServiceOption service_primer="A new natural gas installation for a property typically involves routing the gas line underground
+                <ServiceOption
+                  service_primer="A new natural gas installation for a property typically involves routing the gas line underground
                 using the proper plumbing materials. AttaPlumbing’s professionals handle the installation and pressure testing of the pipes,
                 ensuring the system is safe and compliant with all San Diego building codes.
                 The underground installation terminates at the foundation of the building, where the natural gas provider installs a gas meter.
-                From this meter, gas piping can be routed underground to various access points throughout the building. However, it is most commonly routed through walls or the attic to facilitate easier access and future modifications."/>
+                From this meter, gas piping can be routed underground to various access points throughout the building. However, it is most commonly routed through walls or the attic to facilitate easier access and future modifications."
+                />
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
