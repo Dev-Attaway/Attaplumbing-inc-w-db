@@ -18,12 +18,13 @@ function AboutCard({ imageSrc, title, text, imageWidth, imageHeight }) {
           style={{ objectFit: "cover" }}
         />
       </IKContext>
-      <div className="card-body"
-        style={{padding: "0px"}}>
+      <div className="card-body" style={{ padding: "0px" }}>
         <h5 className="card-header text-center card-header-background card-title heard-text border-top-0 border-custom">
           {title}
         </h5>
-        <p className="card-text border-top-0 border-custom rounded-bottom p-2 ">{text}</p>
+        <p className="card-text border-top-0 border-custom rounded-bottom p-2 ">
+          {text}
+        </p>
       </div>
     </div>
   );

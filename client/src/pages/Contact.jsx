@@ -1,57 +1,105 @@
-// Import the necessary hooks and modules
-import { useState } from "react";
+import { useState, useRef } from "react";
 import emailjs from "@emailjs/browser";
+import axios from "axios";
 import "../styles/Contact.css";
 import ContactTab from "../components/ContactTab";
-import ReCAPTCHA from "react-google-recaptcha";
 import { IKImage, IKContext } from "imagekitio-react";
 import { mobileCheck } from "../MobileCheck";
+import ReCAPTCHAComponent from "../components/ReCAPTCHAComponent";
 
-// Define the Contact component
+// Function to verify reCAPTCHA token by sending it to the backend for validation
+const verifyRecaptchaToken = async (token) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:3001/verify-recaptcha",
+      { token }
+    );
+    console.log("reCAPTCHA response:", response.data); // Log the response from the backend
+    return response.data.success; // Return true if validation succeeded
+  } catch (error) {
+    console.error("Error verifying reCAPTCHA token:", error); // Log error if verification fails
+    return false; // Return false if there was an error
+  }
+};
+
 export default function Contact() {
-  // Define state variables for form inputs and validation flags
+  // Define state variables to manage form input values and validation flags
   const [form, setForm] = useState({
     firstName: "",
     email: "",
     message: "",
   });
 
-  // Define state variables for validation and loading states
   const [checkEmail, setCheckEmail] = useState(false);
   const [checkName, setCheckName] = useState(false);
   const [checkMessage, setCheckMessage] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(null);
-  const [captchaSuccess, setCaptchaSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaSuccess, setCaptchaSuccess] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
 
-  // Handle input changes in the form fields
+  // Create a reference for the reCAPTCHA component
+  const recaptchaRef = useRef(null);
+
+  // Function to handle changes in form input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value,
+      [name]: value, // Update the specific form field based on the name
     });
   };
+
+  // Check if the user is on a mobile device
   const isMobile = mobileCheck();
 
-  // Handle form submission
-  const handleSubmit = () => {
-    // Regular expression for email validation
+  // Function to handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    // Check if reCAPTCHA component is available
+    if (!recaptchaRef.current) {
+      setErrorMessage("reCAPTCHA component is not available.");
+      return;
+    }
+
+    // Get reCAPTCHA token from the component
+    const token = recaptchaRef.current.getValue();
+
+    // If token is not present, show an error
+    if (!token) {
+      setErrorMessage("Please complete the reCAPTCHA.");
+      return;
+    }
+
+    // Verify reCAPTCHA token
+    const recaptchaValid = await verifyRecaptchaToken(token);
+
+    // If reCAPTCHA validation fails, show an error
+    if (!recaptchaValid) {
+      setErrorMessage("reCAPTCHA validation failed. Please try again.");
+      return;
+    }
+
+    // Regular expression for validating email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(form.email);
 
-    // Validate form inputs and set validation flags accordingly
+    // Set validation flags based on form input
     setCheckEmail(!isValidEmail);
     setCheckName(!form.firstName);
     setCheckMessage(!form.message);
 
+    // If all validations pass, proceed with sending the email
     if (isValidEmail && form.firstName && form.message && captchaSuccess) {
-      setIsLoading(true); // Set loading state
+      setIsLoading(true); // Show loading spinner
 
+      // Extract environment variables for emailjs configuration
       const service = import.meta.env.VITE_SERVICE;
       const template = import.meta.env.VITE_TEMPLATE;
       const public_key = import.meta.env.VITE_PUBLIC;
 
+      // Define the parameters for the email template
       const templateParams = {
         from_name: form.firstName,
         from_email: form.email,
@@ -59,30 +107,43 @@ export default function Contact() {
         message: form.message,
       };
 
-      emailjs
-        .send(service, template, templateParams, public_key)
-        .then(() => {
-          setEmailSuccess(true);
-          setIsLoading(false);
-          // Reset form and validation flags after successful submission
-          setForm({
-            firstName: "",
-            email: "",
-            message: "",
-          });
-          setCheckEmail(false);
-          setCheckName(false);
-          setCheckMessage(false);
-          setCaptchaSuccess(null); // Reset CAPTCHA
-        })
-        .catch((error) => {
-          console.log("FAILED...", error);
-          setEmailSuccess(false);
-          setIsLoading(false);
-        });
+      try {
+        // Send the email using emailjs
+        await emailjs.send(service, template, templateParams, public_key);
+        setEmailSuccess(true); // Set success state to true
+        setErrorMessage(""); // Clear any previous error messages
+        setForm({
+          firstName: "",
+          email: "",
+          message: "",
+        }); // Reset form fields
+        setCheckEmail(false);
+        setCheckName(false);
+        setCheckMessage(false);
+        setCaptchaSuccess(null); // Reset CAPTCHA
+      } catch (error) {
+        console.error("FAILED...", error); // Log error if email sending fails
+        setEmailSuccess(false); // Set success state to false
+        setErrorMessage("Failed to send your message. Please try again later."); // Show specific error message
+      } finally {
+        setIsLoading(false); // Ensure loading state is reset
+      }
     } else {
-      setEmailSuccess(false);
+      setEmailSuccess(false); // Set success state to false
+      setErrorMessage(
+        "Please complete all required fields and pass CAPTCHA validation."
+      ); // Show validation error message
     }
+  };
+
+  // Function to handle changes in the reCAPTCHA token
+  const handleCaptchaChange = (token) => {
+    setCaptchaSuccess(!!token); // Set CAPTCHA success state based on token presence
+  };
+
+  // Function to handle reCAPTCHA expiration
+  const handleCaptchaExpired = () => {
+    setCaptchaSuccess(null); // Reset CAPTCHA success state when it expires
   };
 
   return (
@@ -141,9 +202,11 @@ export default function Contact() {
           </div>
 
           <div className="d-flex justify-content-center p-2 m-2">
-            <ReCAPTCHA
+            <ReCAPTCHAComponent
               sitekey={import.meta.env.VITE_RECAPTCHA}
-              onChange={(token) => setCaptchaSuccess(token)}
+              onChange={handleCaptchaChange}
+              onExpired={handleCaptchaExpired}
+              ref={recaptchaRef}
             />
           </div>
 
@@ -200,17 +263,21 @@ export default function Contact() {
                   >
                     <use href="#check-circle-fill"></use>
                   </svg>
-                  <div>Your message was sent, Thank you!</div>
+                  <div>
+                    <p className="font-monospace p-2 m-2">
+                      Your message was sent, Thank you!
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
 
             {emailSuccess === false && !isLoading && (
               <div className="offcanvas-body">
-                <div
-                  className="alert alert-danger d-inline-flex align-items-center flex-wrap"
-                  role="alert"
-                >
+              <div
+                className="alert alert-danger d-inline-flex align-items-center flex-wrap"
+                role="alert"
+              >
                   <svg
                     className="bi"
                     width="32"
@@ -220,18 +287,38 @@ export default function Contact() {
                     <use href="#exclamation-triangle-fill"></use>
                   </svg>
                   <div>
-                    Failed to send your message. Please check the details and
-                    try again!
+                    <p className="font-monospace p-2 m-2">{errorMessage}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="offcanvas-body">
+                <div
+                  className="alert alert-info d-inline-flex align-items-center flex-wrap"
+                  role="alert"
+                >
+                  <svg
+                    className="bi"
+                    width="32"
+                    height="32"
+                    fill="currentColor"
+                  >
+                    <use href="#hourglass-split"></use>
+                  </svg>
+                  <div>
+                    <p className="font-monospace p-2 m-2">
+                      Sending your message, please wait...
+                    </p>
                   </div>
                 </div>
               </div>
             )}
           </div>
         </form>
-        <div className="d-flex justify-content-center">
-          <ContactTab />
-        </div>
       </div>
+      <ContactTab />
     </div>
   );
 }

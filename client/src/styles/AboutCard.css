@@ -22,9 +22,8 @@
   );
 }
 
-.border-custom{
+.border-custom {
   border: 4px solid rgba(255, 1, 1, 0.534);
- 
 }
 @media (max-width: 900px) {
   .card-img-overlay {

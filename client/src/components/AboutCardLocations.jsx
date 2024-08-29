@@ -24,7 +24,7 @@ function AboutCardLocations({
           style={{ objectFit: "cover" }}
         />
       </IKContext>
-      <div className="card-body" style={{padding: "0px"}}>
+      <div className="card-body" style={{ padding: "0px" }}>
         <h5 className="card-header card-header-background text-center heard-text card-title heard-text border-top-0 border-custom">
           {title}
         </h5>
