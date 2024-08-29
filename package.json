@@ -14,12 +14,17 @@
     "seed": "cd server && pnpm run seed",
     "build": "cd client && pnpm run build",
     "watch": "nodemon server.js"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "@google-cloud/recaptcha-enterprise": "^5.10.0",
+    "axios": "^1.7.5",
+    "dotenv": "^16.4.5",
+    "lodash": "^4.17.21"
   }
 }
