@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useMutation } from "@apollo/client";
 import { mobileCheck } from "../MobileCheck";
 import { ADD_REVIEW } from "../utlis/mutations";
