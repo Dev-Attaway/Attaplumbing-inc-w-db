@@ -14,8 +14,9 @@ const ReviewList = ({ reviews, title }) => {
             <div key={review.id}>
               <div className="card p-2 m-2">
                 <div className="card-body">
-                  <h4 className="card-title ">{review.name}</h4>
+                  <h4 className="card-title">{review.name}</h4>
                   <p className="card-text">"{review.reviewContent}"</p>
+                  <p className="card-text fst-italic">-{review.location}</p>
                   <Rating rating={review.reviewRating} />
                 </div>
               </div>
