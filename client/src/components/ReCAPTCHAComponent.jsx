@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef } from "react";
+import React,{ useImperativeHandle, forwardRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
 // ForwardRef to pass ref to the parent component
