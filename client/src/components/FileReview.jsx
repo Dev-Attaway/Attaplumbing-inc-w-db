@@ -162,8 +162,6 @@ export default function FileReview() {
               "Error submitting review. Please try again later."
               
             );
-                                     { console.log(err.networkError)  }
-
           } else {
             setSubmissionError(
               "An unexpected error occurred. Please try again."
