@@ -160,7 +160,10 @@ export default function FileReview() {
           } else if (err.graphQLErrors) {
             setSubmissionError(
               "Error submitting review. Please try again later."
+              
             );
+                                     { console.log(err.networkError)  }
+
           } else {
             setSubmissionError(
               "An unexpected error occurred. Please try again."
