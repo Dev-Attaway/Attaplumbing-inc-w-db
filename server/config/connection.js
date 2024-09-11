@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
-mongoose.connect(process.env.MONGODB_URI_LOCAL);
+const LOCAL_URI = process.env.LOCAL_MONGODB_URI;
 
-module.exports = mongoose.connection;
+const localDBConnection = mongoose.createConnection(LOCAL_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+module.exports = localDBConnection;
