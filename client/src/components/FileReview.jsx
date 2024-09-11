@@ -5,13 +5,16 @@ import { ADD_REVIEW } from "../utlis/mutations";
 import ReCAPTCHAComponent from "./ReCAPTCHAComponent";
 import axios from "axios";
 
+const apiUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://attaplumbing-inc-w-db.onrender.com/"
+    : "http://localhost:3001/verify-recaptcha";
+
+console.log(process.env.NODE_ENV);
 // Function to verify the reCAPTCHA token with the backend
 const verifyRecaptchaToken = async (token) => {
   try {
-    const response = await axios.post(
-      "http://localhost:3001/verify-recaptcha",
-      { token }
-    );
+    const response = await axios.post(apiUrl, { token });
     console.log("reCAPTCHA response:", response.data); // Log the response from the backend
     return response.data.success; // Return the success status from the backend
   } catch (error) {
@@ -155,16 +158,15 @@ export default function FileReview() {
           // Set specific error messages based on error type
           if (err.networkError) {
             setSubmissionError(
-              "Network error. Please check your connection and try again."
+              "Network error. Please check your connection and try again.",
             );
           } else if (err.graphQLErrors) {
             setSubmissionError(
-              "Error submitting review. Please try again later."
-              
+              "Error submitting review. Please try again later.",
             );
           } else {
             setSubmissionError(
-              "An unexpected error occurred. Please try again."
+              "An unexpected error occurred. Please try again.",
             );
           }
 
@@ -172,7 +174,7 @@ export default function FileReview() {
         }
       } else {
         setSubmissionError(
-          "Form validation failed. Please check the input fields."
+          "Form validation failed. Please check the input fields.",
         );
       }
     } catch (error) {
@@ -190,7 +192,7 @@ export default function FileReview() {
   const handleCaptchaExpired = () => {
     setCaptchaSuccess(null);
   };
-  
+
   return (
     <div className="card p-4">
       <form onSubmit={handleFormSubmit}>
