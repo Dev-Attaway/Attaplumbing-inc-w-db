@@ -6,13 +6,20 @@ const cors = require("cors");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const { typeDefs, resolvers } = require("./schemas");
-const db = require("./config/connection");
+const localDB = require("./config/connection"); // Local DB connection
 const liveDB = require("./config/live-connection"); // Production DB connection
 
 // Environment setup
 const ENVIRONMENT = process.env.NODE_ENV || "development";
 const PORT = process.env.PORT || (ENVIRONMENT === "production" ? 80 : 3001);
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+
+if (ENVIRONMENT === "production") {
+  console.log("Running in production mode");
+  // Production-specific settings
+} else {
+  console.log("Running in development mode");
+  // Development-specific settings
+}
 
 // Apollo server setup
 const server = new ApolloServer({
@@ -51,7 +58,7 @@ app.post("/verify-recaptcha", async (req, res) => {
       null,
       {
         params: {
-          secret: RECAPTCHA_SECRET_KEY,
+          secret: process.env.RECAPTCHA_SECRET_KEY,
           response: token,
         },
       }
@@ -85,8 +92,8 @@ async function startServer() {
     await server.start();
     app.use("/graphql", expressMiddleware(server));
 
-    // Use correct database connection depending on environment
-    const currentDB = ENVIRONMENT === "production" ? liveDB : db;
+    // Use the correct database connection depending on environment
+    const currentDB = ENVIRONMENT === "production" ? liveDB : localDB;
 
     currentDB.once("open", () => {
       app.listen(PORT, () => {

@@ -20,7 +20,11 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      // Additional build options if necessary
+      minify: "esbuild", // Minify the code using esbuild
+      chunkSizeWarningLimit: 1000, // Warn if chunk sizes exceed 1000kb
+      sourcemap: false, // Disable source maps in production for security
+      reportCompressedSize: false, // Don't report compressed size to avoid leaks
+      // Other build options
     },
     test: {
       globals: true,
