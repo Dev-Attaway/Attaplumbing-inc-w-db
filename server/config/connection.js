@@ -1,10 +1,16 @@
+// config/connection.js (local database)
+require("dotenv").config();
 const mongoose = require("mongoose");
 
-const LOCAL_URI = process.env.LOCAL_MONGODB_URI;
-
-const localDBConnection = mongoose.createConnection(LOCAL_URI, {
+mongoose.connect(process.env.LOCAL_MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-module.exports = localDBConnection;
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+  console.log("Connected to local MongoDB");
+});
+
+module.exports = db;
