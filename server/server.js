@@ -6,12 +6,12 @@ const cors = require("cors");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const { typeDefs, resolvers } = require("./schemas");
-const db = require("./config/connection");
-const liveDB = require("./config/live-connection"); // Production DB connection
+const db = require("./config/connection"); // Development DB connection
+const { clientPromise } = require("./config/live-connection"); // Production DB connection
 
 // Environment setup
 const ENVIRONMENT = process.env.NODE_ENV || "development";
-const PORT = process.env.PORT || (ENVIRONMENT === "production" ? 80 : 3001);
+const PORT = process.env.PORT || 3001;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Apollo server setup
@@ -85,25 +85,34 @@ async function startServer() {
     await server.start();
     app.use("/graphql", expressMiddleware(server));
 
-    // Use correct database connection depending on environment
-    const currentDB = ENVIRONMENT === "production" ? liveDB : db;
-
-    currentDB.once("open", () => {
-      app.listen(PORT, () => {
-        console.log(`API server running on port ${PORT}!`);
-        console.log(
-          `Use GraphQL at ${
-            ENVIRONMENT === "production"
-              ? "https://attaplumbing.onrender.com/graphql"
-              : `http://localhost:${PORT}/graphql`
-          }`
-        );
+    // Ensure only one DB connection is made based on environment
+    if (ENVIRONMENT === "production") {
+      // Wait for the MongoClient connection in production
+      const currentDB = await clientPromise;
+      if (currentDB) {
+        console.log("Connected to live MongoDB");
+      }
+    } else {
+      // Handle Mongoose connection for development
+      db.once("open", () => {
+        console.log("Connected to local MongoDB");
       });
+    }
+
+    // Start the server after the database connection is established
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(
+        `Use GraphQL at ${
+          ENVIRONMENT === "production"
+            ? "https://attaplumbing.onrender.com/graphql"
+            : `http://localhost:${PORT}/graphql`
+        }`
+      );
     });
   } catch (error) {
     console.error(`Error starting server in ${ENVIRONMENT} mode:`, error);
   }
 }
 
-// Start the server based on environment
 startServer();
