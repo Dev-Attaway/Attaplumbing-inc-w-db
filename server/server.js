@@ -11,7 +11,7 @@ const { clientPromise } = require("./config/live-connection"); // Production DB 
 
 // Environment setup
 const ENVIRONMENT = process.env.NODE_ENV || "development";
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || (ENVIRONMENT === "production" ? 80 : 3001);
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 
 // Apollo server setup
