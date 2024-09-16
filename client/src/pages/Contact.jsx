@@ -12,7 +12,7 @@ const verifyRecaptchaToken = async (token) => {
   try {
     const response = await axios.post(
       "http://localhost:3001/verify-recaptcha",
-      { token }
+      { token },
     );
     console.log("reCAPTCHA response:", response.data); // Log the response from the backend
     return response.data.success; // Return true if validation succeeded
@@ -131,7 +131,7 @@ export default function Contact() {
     } else {
       setEmailSuccess(false); // Set success state to false
       setErrorMessage(
-        "Please complete all required fields and pass CAPTCHA validation."
+        "Please complete all required fields and pass CAPTCHA validation.",
       ); // Show validation error message
     }
   };
@@ -274,10 +274,10 @@ export default function Contact() {
 
             {emailSuccess === false && !isLoading && (
               <div className="offcanvas-body">
-              <div
-                className="alert alert-danger d-inline-flex align-items-center flex-wrap"
-                role="alert"
-              >
+                <div
+                  className="alert alert-danger d-inline-flex align-items-center flex-wrap"
+                  role="alert"
+                >
                   <svg
                     className="bi"
                     width="32"

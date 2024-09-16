@@ -17,9 +17,7 @@ export const MobileProvider = ({ children }) => {
 
   return (
     // Provide the mobile device status to the component tree
-    <MobileContext.Provider value={isMobile}>
-      {children}
-    </MobileContext.Provider>
+    <MobileContext.Provider value={isMobile}>{children}</MobileContext.Provider>
   );
 };
 
