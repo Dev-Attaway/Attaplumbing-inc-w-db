@@ -10,7 +10,6 @@ const db = require("./config/connection");
 
 // Set up the server port and reCAPTCHA secret key from environment variables
 const PORT = process.env.PORT || 3001; // Default to port 3001 if PORT is not set
-const RECAPTCHA_SECRET_KEY = process.env.VITE_RECAPTCHA_SECRET_KEY; // Secret key for reCAPTCHA validation
 
 // Initialize ApolloServer with type definitions and resolvers
 const server = new ApolloServer({
@@ -53,7 +52,7 @@ app.post("/verify-recaptcha", async (req, res) => {
       null,
       {
         params: {
-          secret: RECAPTCHA_SECRET_KEY, // reCAPTCHA secret key
+          secret: process.env.VITE_RECAPTCHA_SECRET_KEY, // reCAPTCHA secret key
           response: token, // reCAPTCHA response token
         },
       }
@@ -75,7 +74,6 @@ async function startServer() {
   // Connect to the database and start the Express server
   db.once("open", () => {
     app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`); // Log server running message
       console.log(`Use GraphQL at http://localhost:${PORT}/graphql`); // Log GraphQL endpoint
     });
   });
