@@ -12,7 +12,7 @@
     "develop": "concurrently \"cd server && pnpm run watch\" \"cd client && pnpm run dev\"",
     "install": "cd server && pnpm i && cd ../client && pnpm i",
     "seed": "cd server && pnpm run seed",
-    "production": "concurrently \"cd server && pnpm run watch\" \"cd client && pnpm run production\"",
+    "production": "cd client && pnpm run production",
     "watch": "nodemon server.js"
   },
   "keywords": [],
