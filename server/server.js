@@ -6,113 +6,82 @@ const cors = require("cors");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const { typeDefs, resolvers } = require("./schemas");
-const db = require("./config/connection"); // Development DB connection
-const { clientPromise } = require("./config/live-connection"); // Production DB connection
+const db = require("./config/connection");
 
-// Environment setup
-const ENVIRONMENT = process.env.NODE_ENV || "development";
-const PORT = process.env.PORT || (ENVIRONMENT === "production" ? 80 : 3001);
-const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+// Set up the server port and reCAPTCHA secret key from environment variables
+const PORT = process.env.PORT || 3001; // Default to port 3001 if PORT is not set
+const RECAPTCHA_SECRET_KEY = process.env.VITE_RECAPTCHA_SECRET_KEY; // Secret key for reCAPTCHA validation
 
-// Apollo server setup
+// Initialize ApolloServer with type definitions and resolvers
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
 
-const app = express();
+const app = express(); // Create an Express application
 
-// CORS middleware
+// Middleware for handling CORS (Cross-Origin Resource Sharing)
 app.use(
   cors({
-    origin:
-      ENVIRONMENT === "production" ? "https://attaplumbing.onrender.com" : "*",
-    credentials: true,
+    origin: (origin, callback) => callback(null, true), // Allow requests from any origin
+    credentials: true, // Allow cookies to be included with requests
   })
 );
 
-// Body parsing middleware
+// Middleware to parse URL-encoded and JSON bodies
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// reCAPTCHA verification endpoint
+// Middleware to verify reCAPTCHA token
 app.post("/verify-recaptcha", async (req, res) => {
-  const { token } = req.body;
+  const { token } = req.body; // Extract token from request body
 
+  // Check if token is provided
   if (!token) {
     return res
-      .status(400)
+      .status(400) // Bad request if token is missing
       .json({ success: false, message: "Token is required" });
   }
 
   try {
+    // Verify reCAPTCHA token with Google's API
     const response = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
+      // is the endpoint provided by Google for verifying reCAPTCHA tokens.
+      `https://www.google.com/recaptcha/api/siteverify`,
+
+      //  indicates that no request body is sent. Instead, the parameters are passed as URL query parameters
       null,
       {
         params: {
-          secret: RECAPTCHA_SECRET_KEY,
-          response: token,
+          secret: RECAPTCHA_SECRET_KEY, // reCAPTCHA secret key
+          response: token, // reCAPTCHA response token
         },
       }
     );
-
-    // Send detailed response in development mode
-    if (ENVIRONMENT === "development") {
-      return res.json({
-        success: response.data.success,
-        details: response.data,
-      });
-    }
-
-    // Send generic response in production mode
-    return res.json({ success: response.data.success });
+    const { success } = response.data; // Extract success status from the response
+    res.json({ success }); // Send success status as JSON response
   } catch (error) {
+    // Log error and respond with a failure message
     console.error("Error verifying reCAPTCHA token:", error);
-
-    // Send generic error in production, detailed in development
-    return res.status(500).json({
-      success: false,
-      message:
-        ENVIRONMENT === "development" ? error.message : "Verification failed",
-    });
+    res.status(500).json({ success: false, message: "Verification failed" });
   }
 });
 
-// Unified server start function
+// Function to start the server
 async function startServer() {
-  try {
-    await server.start();
-    app.use("/graphql", expressMiddleware(server));
+  await server.start(); // Start the Apollo Server
+  app.use("/graphql", expressMiddleware(server)); // Set up GraphQL middleware
 
-    // Ensure only one DB connection is made based on environment
-    if (ENVIRONMENT === "production") {
-      // Wait for the MongoClient connection in production
-      const currentDB = await clientPromise;
-      if (currentDB) {
-        console.log("Connected to live MongoDB");
-      }
-    } else {
-      // Handle Mongoose connection for development
-      db.once("open", () => {
-        console.log("Connected to local MongoDB");
-      });
-    }
-
-    // Start the server after the database connection is established
+  // Connect to the database and start the Express server
+  db.once("open", () => {
     app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(
-        `Use GraphQL at ${
-          ENVIRONMENT === "production"
-            ? "https://attaplumbing.onrender.com/graphql"
-            : `http://localhost:${PORT}/graphql`
-        }`
-      );
+      console.log(`API server running on port ${PORT}!`); // Log server running message
+      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`); // Log GraphQL endpoint
     });
-  } catch (error) {
-    console.error(`Error starting server in ${ENVIRONMENT} mode:`, error);
-  }
+  });
 }
 
-startServer();
+// Start the server and handle any errors
+startServer().catch((error) => {
+  console.error("Error starting server:", error); // Log error if server fails to start
+});
