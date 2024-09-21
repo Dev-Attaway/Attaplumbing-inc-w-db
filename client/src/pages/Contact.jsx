@@ -212,6 +212,10 @@ export default function Contact() {
                   className="alert alert-danger d-inline-flex align-items-center flex-wrap"
                   role="alert"
                 >
+                <div
+                  className="alert alert-danger d-inline-flex align-items-center flex-wrap"
+                  role="alert"
+                >
                   <svg
                     className="bi"
                     width="32"

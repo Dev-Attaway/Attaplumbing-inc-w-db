@@ -5,6 +5,7 @@ export const QUERY_REVIEWS = gql`
     reviews {
       id
       name
+      location
       reviewContent
       reviewRating
     }
@@ -16,6 +17,7 @@ export const QUERY_SINGLE_REVIEWS = gql`
     review(reviewId: $reviewId) {
       id
       name
+      location
       reviewContent
       reviewRating
     }

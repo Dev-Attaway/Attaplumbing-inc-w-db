@@ -7,6 +7,7 @@
     "dev": "vite",
     "start": "vite  && node server.js",
     "build": "vite build",
+    "production": "pnpm install && vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "img-format": "node imagemin.js",
@@ -15,6 +16,7 @@
   "dependencies": {
     "@apollo/client": "^3.11.2",
     "@emailjs/browser": "^4.3.3",
+    "axios": "^1.7.7",
     "bootstrap": "^5.2.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
