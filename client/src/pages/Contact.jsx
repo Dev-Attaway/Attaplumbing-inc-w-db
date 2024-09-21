@@ -7,7 +7,6 @@ import { IKImage, IKContext } from "imagekitio-react";
 import { mobileCheck } from "../MobileCheck";
 
 export default function Contact() {
-  // Define state variables to manage form input values and validation flags
   const [form, setForm] = useState({
     firstName: "",
     email: "",
@@ -19,43 +18,33 @@ export default function Contact() {
   const [checkMessage, setCheckMessage] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Function to handle changes in form input fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value, // Update the specific form field based on the name
+      [name]: value,
     });
   };
 
-  // Check if the user is on a mobile device
   const isMobile = mobileCheck();
 
-  // Function to handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-
-    // Regular expression for validating email format
+    e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(form.email);
 
-    // Set validation flags based on form input
     setCheckEmail(!isValidEmail);
     setCheckName(!form.firstName);
     setCheckMessage(!form.message);
 
-    // If all validations pass, proceed with sending the email
     if (isValidEmail && form.firstName && form.message) {
-      setIsLoading(true); // Show loading spinner
-
-      // Extract environment variables for emailjs configuration
+      setIsLoading(true);
       const service = import.meta.env.VITE_SERVICE;
       const template = import.meta.env.VITE_TEMPLATE;
       const public_key = import.meta.env.VITE_PUBLIC;
 
-      // Define the parameters for the email template
       const templateParams = {
         from_name: form.firstName,
         from_email: form.email,
@@ -64,28 +53,27 @@ export default function Contact() {
       };
 
       try {
-        // Send the email using emailjs
         await emailjs.send(service, template, templateParams, public_key);
-        setEmailSuccess(true); // Set success state to true
-        setErrorMessage(""); // Clear any previous error messages
+        setEmailSuccess(true);
+        setErrorMessage("");
         setForm({
           firstName: "",
           email: "",
           message: "",
-        }); // Reset form fields
+        });
         setCheckEmail(false);
         setCheckName(false);
         setCheckMessage(false);
       } catch (error) {
-        console.error("FAILED...", error); // Log error if email sending fails
-        setEmailSuccess(false); // Set success state to false
-        setErrorMessage("Failed to send your message. Please try again later."); // Show specific error message
+        console.error("FAILED...", error);
+        setEmailSuccess(false);
+        setErrorMessage("Failed to send your message. Please try again later.");
       } finally {
-        setIsLoading(false); // Ensure loading state is reset
+        setIsLoading(false);
       }
     } else {
-      setEmailSuccess(false); // Set success state to false
-      setErrorMessage("Please complete all required fields."); // Show validation error message
+      setEmailSuccess(false);
+      setErrorMessage("Please complete all required fields.");
     }
   };
 
@@ -146,7 +134,9 @@ export default function Contact() {
 
           <button
             disabled={isLoading}
-            className={`m-3 ${isMobile ? "btn-custom-contact-mobile" : "btn-custom-contact"}`}
+            className={`m-3 ${
+              isMobile ? "btn-custom-contact-mobile" : "btn-custom-contact"
+            }`}
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasTop"
@@ -208,10 +198,6 @@ export default function Contact() {
 
             {emailSuccess === false && !isLoading && (
               <div className="offcanvas-body">
-                <div
-                  className="alert alert-danger d-inline-flex align-items-center flex-wrap"
-                  role="alert"
-                >
                 <div
                   className="alert alert-danger d-inline-flex align-items-center flex-wrap"
                   role="alert"
