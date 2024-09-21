@@ -1,26 +1,10 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import axios from "axios";
 import "../styles/Contact.css";
 import ContactTab from "../components/ContactTab";
 import { IKImage, IKContext } from "imagekitio-react";
 import { mobileCheck } from "../MobileCheck";
-import ReCAPTCHAComponent from "../components/ReCAPTCHAComponent";
-
-// Function to verify reCAPTCHA token by sending it to the backend for validation
-const verifyRecaptchaToken = async (token) => {
-  try {
-    const response = await axios.post(
-      "http://localhost:3001/verify-recaptcha",
-      { token },
-    );
-    console.log("reCAPTCHA response:", response.data); // Log the response from the backend
-    return response.data.success; // Return true if validation succeeded
-  } catch (error) {
-    console.error("Error verifying reCAPTCHA token:", error); // Log error if verification fails
-    return false; // Return false if there was an error
-  }
-};
 
 export default function Contact() {
   // Define state variables to manage form input values and validation flags
@@ -35,11 +19,7 @@ export default function Contact() {
   const [checkMessage, setCheckMessage] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [captchaSuccess, setCaptchaSuccess] = useState(null);
   const [errorMessage, setErrorMessage] = useState(""); // State for error messages
-
-  // Create a reference for the reCAPTCHA component
-  const recaptchaRef = useRef(null);
 
   // Function to handle changes in form input fields
   const handleInputChange = (e) => {
@@ -57,30 +37,6 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
-    // Check if reCAPTCHA component is available
-    if (!recaptchaRef.current) {
-      setErrorMessage("reCAPTCHA component is not available.");
-      return;
-    }
-
-    // Get reCAPTCHA token from the component
-    const token = recaptchaRef.current.getValue();
-
-    // If token is not present, show an error
-    if (!token) {
-      setErrorMessage("Please complete the reCAPTCHA.");
-      return;
-    }
-
-    // Verify reCAPTCHA token
-    const recaptchaValid = await verifyRecaptchaToken(token);
-
-    // If reCAPTCHA validation fails, show an error
-    if (!recaptchaValid) {
-      setErrorMessage("reCAPTCHA validation failed. Please try again.");
-      return;
-    }
-
     // Regular expression for validating email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidEmail = emailRegex.test(form.email);
@@ -91,7 +47,7 @@ export default function Contact() {
     setCheckMessage(!form.message);
 
     // If all validations pass, proceed with sending the email
-    if (isValidEmail && form.firstName && form.message && captchaSuccess) {
+    if (isValidEmail && form.firstName && form.message) {
       setIsLoading(true); // Show loading spinner
 
       // Extract environment variables for emailjs configuration
@@ -120,7 +76,6 @@ export default function Contact() {
         setCheckEmail(false);
         setCheckName(false);
         setCheckMessage(false);
-        setCaptchaSuccess(null); // Reset CAPTCHA
       } catch (error) {
         console.error("FAILED...", error); // Log error if email sending fails
         setEmailSuccess(false); // Set success state to false
@@ -130,20 +85,8 @@ export default function Contact() {
       }
     } else {
       setEmailSuccess(false); // Set success state to false
-      setErrorMessage(
-        "Please complete all required fields and pass CAPTCHA validation.",
-      ); // Show validation error message
+      setErrorMessage("Please complete all required fields."); // Show validation error message
     }
-  };
-
-  // Function to handle changes in the reCAPTCHA token
-  const handleCaptchaChange = (token) => {
-    setCaptchaSuccess(!!token); // Set CAPTCHA success state based on token presence
-  };
-
-  // Function to handle reCAPTCHA expiration
-  const handleCaptchaExpired = () => {
-    setCaptchaSuccess(null); // Reset CAPTCHA success state when it expires
   };
 
   return (
@@ -201,17 +144,8 @@ export default function Contact() {
             )}
           </div>
 
-          <div className="d-flex justify-content-center p-2 m-2">
-            <ReCAPTCHAComponent
-              sitekey={import.meta.env.VITE_RECAPTCHA}
-              onChange={handleCaptchaChange}
-              onExpired={handleCaptchaExpired}
-              ref={recaptchaRef}
-            />
-          </div>
-
           <button
-            disabled={!captchaSuccess || isLoading}
+            disabled={isLoading}
             className={`m-3 ${isMobile ? "btn-custom-contact-mobile" : "btn-custom-contact"}`}
             type="button"
             data-bs-toggle="offcanvas"
@@ -274,6 +208,10 @@ export default function Contact() {
 
             {emailSuccess === false && !isLoading && (
               <div className="offcanvas-body">
+                <div
+                  className="alert alert-danger d-inline-flex align-items-center flex-wrap"
+                  role="alert"
+                >
                 <div
                   className="alert alert-danger d-inline-flex align-items-center flex-wrap"
                   role="alert"

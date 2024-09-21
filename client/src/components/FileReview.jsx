@@ -1,27 +1,7 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { mobileCheck } from "../MobileCheck";
 import { ADD_REVIEW } from "../utlis/mutations";
-import ReCAPTCHAComponent from "./ReCAPTCHAComponent";
-import axios from "axios";
-
-const apiUrl =
-  process.env.NODE_ENV === "production"
-    ? "https://attaplumbing-inc-w-db.onrender.com/"
-    : "http://localhost:3001/verify-recaptcha";
-
-console.log(process.env.NODE_ENV);
-// Function to verify the reCAPTCHA token with the backend
-const verifyRecaptchaToken = async (token) => {
-  try {
-    const response = await axios.post(apiUrl, { token });
-    console.log("reCAPTCHA response:", response.data); // Log the response from the backend
-    return response.data.success; // Return the success status from the backend
-  } catch (error) {
-    console.error("Error verifying reCAPTCHA token:", error);
-    return false; // Return false if there's an error during verification
-  }
-};
 
 export default function FileReview() {
   // State variables to track validation errors for each form field
@@ -31,7 +11,6 @@ export default function FileReview() {
   const [checkReviewContent, setCheckReviewContent] = useState(false);
   const [checkReviewRating, setCheckReviewRating] = useState(false);
   const [checkEmail, setCheckEmail] = useState(false);
-  const [captchaSuccess, setCaptchaSuccess] = useState(null);
   const [reviewSubmitSuccess, setReviewSubmitSuccess] = useState(false);
   const [submissionError, setSubmissionError] = useState("");
 
@@ -40,9 +19,6 @@ export default function FileReview() {
 
   // Determine if the device is mobile
   const isMobile = mobileCheck();
-
-  // Ref for reCAPTCHA component
-  const recaptchaRef = useRef(null);
 
   // State variable for form inputs
   const [form, setForm] = useState({
@@ -68,130 +44,89 @@ export default function FileReview() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (!recaptchaRef.current) {
-      setSubmissionError("reCAPTCHA component is not available.");
-      return;
-    }
+    // Regular expressions for validation
+    const invoiceRegex = /\d{4}/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidInvoice = invoiceRegex.test(form.invoice);
+    const isValidEmail = emailRegex.test(form.email);
 
-    // Get the reCAPTCHA token
-    const token = recaptchaRef.current.getValue();
+    // Update validation error flags
+    setCheckName(!form.name);
+    setCheckLocation(!form.location);
+    setCheckInvoiceNumber(!isValidInvoice);
+    setCheckReviewContent(!form.reviewContent);
+    setCheckEmail(!isValidEmail);
+    setCheckReviewRating(!form.reviewRating);
 
-    if (!token) {
-      setSubmissionError("Please complete the reCAPTCHA.");
-      return;
-    }
+    // Check if all fields are valid
+    if (
+      isValidInvoice &&
+      isValidEmail &&
+      form.location &&
+      form.name &&
+      form.reviewContent &&
+      form.reviewRating
+    ) {
+      setSubmissionError("");
 
-    try {
-      // Verify the reCAPTCHA token
-      const recaptchaValid = await verifyRecaptchaToken(token);
+      // Prepare data for GraphQL mutation
+      const tempDbPost = {
+        location: form.location,
+        name: form.name,
+        reviewContent: form.reviewContent,
+        reviewRating: form.reviewRating,
+      };
 
-      if (!recaptchaValid) {
-        setSubmissionError("reCAPTCHA validation failed. Please try again.");
-        return;
-      }
+      try {
+        // Execute the GraphQL mutation
+        const { data } = await addReview({
+          variables: { input: tempDbPost },
+        });
 
-      // Regular expressions for validation
-      const invoiceRegex = /\d{4}/;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isValidInvoice = invoiceRegex.test(form.invoice);
-      const isValidEmail = emailRegex.test(form.email);
+        setReviewSubmitSuccess(true); // Set success flag
 
-      // Update validation error flags
-      setCheckName(!form.name);
-      setCheckLocation(!form.location);
-      setCheckInvoiceNumber(!isValidInvoice);
-      setCheckReviewContent(!form.reviewContent);
-      setCheckEmail(!isValidEmail);
-      setCheckReviewRating(!form.reviewRating);
+        // Clear form and validation errors
+        setForm({
+          name: "",
+          location: "",
+          reviewContent: "",
+          reviewRating: "",
+          email: "",
+          invoice: "",
+        });
+        setCheckName(false);
+        setCheckLocation(false);
+        setCheckInvoiceNumber(false);
+        setCheckReviewContent(false);
+        setCheckEmail(false);
+        setCheckReviewRating(false);
+      } catch (err) {
+        setReviewSubmitSuccess(false); // Set failure flag
 
-      // Check if all fields are valid
-      if (
-        isValidInvoice &&
-        isValidEmail &&
-        form.location &&
-        form.name &&
-        form.reviewContent &&
-        form.reviewRating &&
-        captchaSuccess
-      ) {
-        setSubmissionError("");
-
-        // Prepare data for GraphQL mutation
-        const tempDbPost = {
-          location: form.location,
-          name: form.name,
-          reviewContent: form.reviewContent,
-          reviewRating: form.reviewRating,
-        };
-
-        try {
-          // Execute the GraphQL mutation
-          const { data } = await addReview({
-            variables: { input: tempDbPost },
-          });
-
-          setReviewSubmitSuccess(true); // Set success flag
-
-          // Clear form and validation errors
-          setForm({
-            name: "",
-            location: "",
-            reviewContent: "",
-            reviewRating: "",
-            email: "",
-            invoice: "",
-          });
-          setCheckName(false);
-          setCheckLocation(false);
-          setCheckInvoiceNumber(false);
-          setCheckReviewContent(false);
-          setCheckEmail(false);
-          setCheckReviewRating(false);
-
-          // Reset reCAPTCHA
-          if (recaptchaRef.current) {
-            recaptchaRef.current.reset();
-          }
-        } catch (err) {
-          setReviewSubmitSuccess(false); // Set failure flag
-
-          // Set specific error messages based on error type
-          if (err.networkError) {
-            setSubmissionError(
-              "Network error. Please check your connection and try again.",
-            );
-          } else if (err.graphQLErrors) {
-            setSubmissionError(
-              "Error submitting review. Please try again later.",
-            );
-          } else {
-            setSubmissionError(
-              "An unexpected error occurred. Please try again.",
-            );
-          }
-
-          console.error("Error:", err);
+        // Set specific error messages based on error type
+        if (err.networkError) {
+          setSubmissionError(
+            "Network error. Please check your connection and try again."
+          );
+        } else if (err.graphQLErrors) {
+          setSubmissionError(
+            "Error submitting review. Please try again later."
+          );
+        } else {
+          setSubmissionError(
+            "An unexpected error occurred. Please try again."
+          );
         }
-      } else {
-        setSubmissionError(
-          "Form validation failed. Please check the input fields.",
-        );
+
+        console.error("Error:", err);
       }
-    } catch (error) {
-      console.error("Error in form submission:", error);
-      setSubmissionError("An error occurred during form submission.");
+    } else {
+      setSubmissionError(
+        "Form validation failed. Please check the input fields."
+      );
     }
   };
 
-  // Handle changes in reCAPTCHA token
-  const handleCaptchaChange = (token) => {
-    setCaptchaSuccess(!!token);
-  };
-
-  // Handle expiration of reCAPTCHA
-  const handleCaptchaExpired = () => {
-    setCaptchaSuccess(null);
-  };
 
   return (
     <div className="card p-4">
@@ -286,7 +221,7 @@ export default function FileReview() {
             Review Rating:
           </label>
           <input
-            type="number" // Input type changed to "text" to match the string type in GraphQL
+            type="number"
             id="reviewRating"
             value={form.reviewRating}
             onChange={handleInputChange}
@@ -301,16 +236,7 @@ export default function FileReview() {
           )}
         </div>
 
-        <div className="py-2 my-2">
-          <ReCAPTCHAComponent
-            sitekey={import.meta.env.VITE_RECAPTCHA}
-            onChange={handleCaptchaChange}
-            onExpired={handleCaptchaExpired}
-            ref={recaptchaRef}
-          />
-        </div>
         <button
-          disabled={!captchaSuccess}
           className={`m-3 ${isMobile ? "btn-custom-contact-mobile" : "btn-custom-contact"}`}
           type="submit"
           data-bs-toggle="offcanvas"
@@ -374,7 +300,7 @@ export default function FileReview() {
                 <svg className="bi" width="32" height="32" fill="currentColor">
                   <use href="#exclamation-triangle-fill"></use>
                 </svg>
-                <div className="font-monospace p-2 m-2">{submissionError}</div>
+                <div>{submissionError}</div>
               </div>
             )}
           </div>
